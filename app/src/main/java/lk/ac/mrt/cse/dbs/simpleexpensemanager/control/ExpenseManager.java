@@ -34,7 +34,8 @@ import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Transaction;
  * method to setup the DAO objects depending on the implementation.
  */
 public abstract class ExpenseManager implements Serializable {
-    private AccountDAO accountsHolder;
+    private AccountDAO
+            accountsHolder;
     private TransactionDAO transactionsHolder;
 
     /***

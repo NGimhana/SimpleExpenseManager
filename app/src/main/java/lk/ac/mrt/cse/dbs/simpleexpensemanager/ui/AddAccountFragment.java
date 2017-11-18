@@ -23,21 +23,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.R;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.ExpenseManager;
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.DBHelper;
 
 import static lk.ac.mrt.cse.dbs.simpleexpensemanager.Constants.EXPENSE_MANAGER;
 /**
  *
  */
 public class AddAccountFragment extends Fragment implements View.OnClickListener {
+
+    DBHelper db;
+
     private ExpenseManager currentExpenseManager;
     private EditText accountNumber;
     private EditText bankName;
     private EditText accountHolderName;
     private EditText initialBalance;
     private Button addAccount;
+
+    public AddAccountFragment() {
+    }
 
     public static AddAccountFragment newInstance(ExpenseManager expenseManager) {
         AddAccountFragment addAccountFragment = new AddAccountFragment();
@@ -47,11 +55,11 @@ public class AddAccountFragment extends Fragment implements View.OnClickListener
         return addAccountFragment;
     }
 
-    public AddAccountFragment() {
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        db = new DBHelper(getActivity());
+
         View rootView = inflater.inflate(R.layout.fragment_add_account, container, false);
         accountNumber = (EditText) rootView.findViewById(R.id.account_num);
         bankName = (EditText) rootView.findViewById(R.id.bank_name);
@@ -97,6 +105,14 @@ public class AddAccountFragment extends Fragment implements View.OnClickListener
                 if (currentExpenseManager != null) {
                     currentExpenseManager.addAccount(accountNumStr, bankNameStr, accountHolderStr,
                             Double.parseDouble(initialBalanceStr));
+
+                    ////////////////////////
+                    boolean b = db.AddAccount(accountNumStr, bankNameStr, accountHolderStr, Double.parseDouble(initialBalanceStr));
+                    if (b) {
+                        Toast.makeText(getActivity(), "Inserted", Toast.LENGTH_LONG).show();
+                    }
+
+
                 }
                 cleanUp();
                 break;

@@ -30,9 +30,11 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.R;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.ExpenseManager;
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.DBHelper;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.exception.InvalidAccountException;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.ExpenseType;
 
@@ -41,12 +43,16 @@ import static lk.ac.mrt.cse.dbs.simpleexpensemanager.Constants.EXPENSE_MANAGER;
  *
  */
 public class ManageExpensesFragment extends Fragment implements View.OnClickListener {
+    DBHelper db;
     private Button submitButton;
     private EditText amount;
     private Spinner accountSelector;
     private RadioGroup expenseTypeGroup;
     private DatePicker datePicker;
     private ExpenseManager currentExpenseManager;
+
+    public ManageExpensesFragment() {
+    }
 
     public static ManageExpensesFragment newInstance(ExpenseManager expenseManager) {
         ManageExpensesFragment manageExpensesFragment = new ManageExpensesFragment();
@@ -56,11 +62,11 @@ public class ManageExpensesFragment extends Fragment implements View.OnClickList
         return manageExpensesFragment;
     }
 
-    public ManageExpensesFragment() {
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        db = new DBHelper(getActivity());
+
         View rootView = inflater.inflate(R.layout.fragment_manage_expenses, container, false);
         submitButton = (Button) rootView.findViewById(R.id.submit_amount);
         submitButton.setOnClickListener(this);
@@ -73,6 +79,10 @@ public class ManageExpensesFragment extends Fragment implements View.OnClickList
         if (currentExpenseManager != null) {
             adapter = new ArrayAdapter<>(this.getActivity(), R.layout.support_simple_spinner_dropdown_item,
                     currentExpenseManager.getAccountNumbersList());
+
+            rootView.invalidate();
+
+
         }
         accountSelector.setAdapter(adapter);
 
@@ -105,6 +115,19 @@ public class ManageExpensesFragment extends Fragment implements View.OnClickList
                     try {
                         currentExpenseManager.updateAccountBalance(selectedAccount, day, month, year,
                                 ExpenseType.valueOf(type.toUpperCase()), amountStr);
+
+                        //////
+                        String traDate = day + "-" + month + "-" + year;
+
+                        boolean b = db.AddTransaction(traDate, selectedAccount,
+                                Double.parseDouble(amountStr), type.toUpperCase());
+
+                        if (b) {
+                            Toast.makeText(getActivity(), "TRA Added", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(getActivity(), "FAiled", Toast.LENGTH_LONG).show();
+                        }
+                        //////////////////////////////////////////
                     } catch (InvalidAccountException e) {
                         new AlertDialog.Builder(this.getActivity())
                                 .setTitle(this.getString(R.string.msg_account_update_unable) + selectedAccount)
