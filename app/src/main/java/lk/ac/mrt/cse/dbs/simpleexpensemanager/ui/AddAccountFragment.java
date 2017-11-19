@@ -105,12 +105,7 @@ public class AddAccountFragment extends Fragment implements View.OnClickListener
                 if (currentExpenseManager != null) {
                     currentExpenseManager.addAccount(accountNumStr, bankNameStr, accountHolderStr,
                             Double.parseDouble(initialBalanceStr));
-
-                    ////////////////////////
-                    boolean b = db.AddAccount(accountNumStr, bankNameStr, accountHolderStr, Double.parseDouble(initialBalanceStr));
-                    if (b) {
-                        Toast.makeText(getActivity(), "Inserted", Toast.LENGTH_LONG).show();
-                    }
+                    Toast.makeText(getActivity(), "Inserted", Toast.LENGTH_LONG).show();
 
 
                 }

@@ -43,7 +43,7 @@ import static lk.ac.mrt.cse.dbs.simpleexpensemanager.Constants.EXPENSE_MANAGER;
  *
  */
 public class ManageExpensesFragment extends Fragment implements View.OnClickListener {
-    DBHelper db;
+    public DBHelper db;
     private Button submitButton;
     private EditText amount;
     private Spinner accountSelector;
@@ -52,6 +52,7 @@ public class ManageExpensesFragment extends Fragment implements View.OnClickList
     private ExpenseManager currentExpenseManager;
 
     public ManageExpensesFragment() {
+        //db = new DBHelper(getActivity());
     }
 
     public static ManageExpensesFragment newInstance(ExpenseManager expenseManager) {
@@ -119,15 +120,13 @@ public class ManageExpensesFragment extends Fragment implements View.OnClickList
                         //////
                         String traDate = day + "-" + month + "-" + year;
 
-                        boolean b = db.AddTransaction(traDate, selectedAccount,
-                                Double.parseDouble(amountStr), type.toUpperCase());
-
+                        boolean b = db.AddTransactionDetail(traDate, selectedAccount, type, Double.parseDouble(amountStr));
                         if (b) {
-                            Toast.makeText(getActivity(), "TRA Added", Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(getActivity(), "FAiled", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(), "Added", Toast.LENGTH_LONG).show();
                         }
-                        //////////////////////////////////////////
+
+
+                        ////////////////////////////////////////
                     } catch (InvalidAccountException e) {
                         new AlertDialog.Builder(this.getActivity())
                                 .setTitle(this.getString(R.string.msg_account_update_unable) + selectedAccount)

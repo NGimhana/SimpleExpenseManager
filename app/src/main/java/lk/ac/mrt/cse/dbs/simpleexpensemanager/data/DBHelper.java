@@ -13,11 +13,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
     //Database Name
-    private static final String DATABASE_NAME = "MyDatabase.db";
+    private static final String DATABASE_NAME = "150105A.db";
 
     //Table Name
     private static final String TABLE_ACCOUNT = "account";
-    private static final String TABLE_TRANSACTION = "transaction";
+    private static final String TABLE_TRA = "transac";
+
 
     //Table Columns - Account
     private static final String ACCOUNT_NO = "accountNo";
@@ -25,11 +26,16 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String ACCOUNT_HOLDER_NAME = "accountHolderName";
     private static final String BALANCE = "balance";
 
-    //Table Columns - Transaction
-    private static final String ACCOUNT_NO_TRA = "accountNoTra";
-    private static final String DATE = "date";
-    private static final String EXPENSE_TYPE = "expenseType";
-    private static final String AMOUNT = "amount";
+
+    //Table Columns - transac
+    private static final String TRA_DATE = "tradate";
+    private static final String TRA_ACC_NO = "traacc";
+    private static final String TRA_EXP = "traexp";
+    private static final String TRA_AMO = "traamo";
+
+
+
+
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -37,59 +43,38 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String sqlAccountTable = "CREATE TABLE " + TABLE_ACCOUNT
-                + " ( "
-                + ACCOUNT_NO + " TEXT  , "
-                + BANK_NAME + " TEXT ,"
-                + ACCOUNT_HOLDER_NAME + " TEXT ,"
-                + BALANCE + " DOUBLE "
-                + " ) ";
-
-//        String sqlTransactionTable  = "CREATE TABLE "+TABLE_TRANSACTION
-//                +" ( "
-//                + DATE + " TEXT , "
-//                + ACCOUNT_NO_TRA + " TEXT ,"
-//                + AMOUNT +" DOUBLE ,"
-//                + EXPENSE_TYPE + " TEXT "
-//                +" ) ";
-        String sqlTransactionTable = "CREATE TABLE transaction (date Text,accountNoTra TEXT,amount DOUBLE,expenseType TEXT)";
-
+        String sqlAccountTable = "CREATE TABLE " + TABLE_ACCOUNT + " ( " + ACCOUNT_NO + " TEXT  , " + BANK_NAME + " TEXT ," + ACCOUNT_HOLDER_NAME + " TEXT ," + BALANCE + " DOUBLE " + " ) ";
+        String sqlTraTable = "CREATE TABLE " + TABLE_TRA + " ( " + TRA_DATE + " TEXT, " + TRA_ACC_NO + " TEXT, " + TRA_EXP + " TEXT, " + TRA_AMO + " DOUBLE " + " ) ";
         sqLiteDatabase.execSQL(sqlAccountTable);
-        sqLiteDatabase.execSQL(sqlTransactionTable);
+        sqLiteDatabase.execSQL(sqlTraTable);
     }
 
     public boolean AddAccount(String account_NO, String bank_Name, String account_Holder_Name, Double balance) {
         boolean result = false;
-
         ContentValues contentValues = new ContentValues();
-
         SQLiteDatabase database = this.getWritableDatabase();
-
         contentValues.put(ACCOUNT_NO, account_NO);
         contentValues.put(BANK_NAME, bank_Name);
         contentValues.put(ACCOUNT_HOLDER_NAME, account_Holder_Name);
-
         contentValues.put(BALANCE, balance);
         long i = database.insert(TABLE_ACCOUNT, null, contentValues);
         result = i != -1;
         return result;
     }
 
-    public boolean AddTransaction(String date, String accountNoTra, double amount, String expenseType) {
+    public boolean AddTransactionDetail(String traDate, String traAccNo, String expType, Double traAmount) {
         boolean result = false;
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-
-        contentValues.put(DATE, date);
-        contentValues.put(ACCOUNT_NO_TRA, accountNoTra);
-        contentValues.put(AMOUNT, amount);
-        contentValues.put(EXPENSE_TYPE, expenseType);
-
-        long i = database.insert(TABLE_TRANSACTION, null, contentValues);
-
+        contentValues.put(TRA_DATE, traDate);
+        contentValues.put(TRA_ACC_NO, traAccNo);
+        contentValues.put(TRA_EXP, expType);
+        contentValues.put(TRA_AMO, traAmount);
+        long i = database.insert(TABLE_TRA, null, contentValues);
         result = i != -1;
         return result;
     }
+
 
     public Cursor getAllDetails(String table_Name) {
         SQLiteDatabase database = this.getReadableDatabase();
@@ -101,9 +86,9 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         String sqlAcc = "DROP TABLE IF EXISTS " + TABLE_ACCOUNT;
-        String sqlTra = "DROP TABLE IF EXISTS " + TABLE_TRANSACTION;
+        String sqlTraA = "DROP TABLE IF EXISTS " + TABLE_TRA;
         sqLiteDatabase.execSQL(sqlAcc);
-        sqLiteDatabase.execSQL(sqlTra);
+        sqLiteDatabase.execSQL(sqlTraA);
     }
 }
 

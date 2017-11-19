@@ -1,18 +1,15 @@
 package lk.ac.mrt.cse.dbs.simpleexpensemanager.control;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.exception.ExpenseManagerException;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.AccountDAO;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.DBHelper;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.TransactionDAO;
-import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.impl.InMemoryAccountDAO;
-import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.impl.InMemoryTransactionDAO;
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.impl.InPersistenceAccountDAO;
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.impl.InPersistenceTransactionDAO;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Account;
 
 /**
@@ -32,35 +29,24 @@ public class PersistentExpenseManager extends ExpenseManager {
 
     @Override
     public void setup() throws ExpenseManagerException {
-/////////////////
-        TransactionDAO inMemoryTransactionDAO = new InMemoryTransactionDAO();
-        setTransactionsDAO(inMemoryTransactionDAO);
 
-        AccountDAO inMemoryAccountDAO = new InMemoryAccountDAO();
-        setAccountsDAO(inMemoryAccountDAO);
+        TransactionDAO inPersistenceTransactionDAO = new InPersistenceTransactionDAO(context);
+        setTransactionsDAO(inPersistenceTransactionDAO);
 
-//////////////////////
 
-        SQLiteDatabase database = db.getReadableDatabase();
+        AccountDAO inPersistenceAccountDAO = new InPersistenceAccountDAO(context);
+        setAccountsDAO(inPersistenceAccountDAO);
 
-        List<lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Account> accountList = new ArrayList<>();
 
-        Cursor res = db.getAllDetails("account");
-        res.moveToFirst();
-
-        while (res.moveToNext()) {
-
-            String accountNo = res.getString(0);
-            String bankName = res.getString(1);
-            String accountHolderName = res.getString(2);
-            Double balance = res.getDouble(3);
-
-            Account account = new Account(accountNo, bankName, accountHolderName, balance);
-            accountList.add(account);
-
-            //Adding New Account to SQL database
+        //Get Account No  From Database
+        List<Account> accountsList = inPersistenceAccountDAO.getAccountsList();
+        for (Account account : accountsList) {
             getAccountsDAO().addAccount(account);
-
         }
+
+        //Get Transaction History From Database
+        inPersistenceTransactionDAO.getAllTransactionLogs();
+
+
     }
 }
