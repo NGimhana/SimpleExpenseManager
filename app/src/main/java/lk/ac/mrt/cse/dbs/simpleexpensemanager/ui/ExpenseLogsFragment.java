@@ -40,6 +40,10 @@ import static lk.ac.mrt.cse.dbs.simpleexpensemanager.Constants.EXPENSE_MANAGER;
 public class ExpenseLogsFragment extends Fragment {
     private ExpenseManager currentExpenseManager;
 
+    public ExpenseLogsFragment() {
+
+    }
+
     public static ExpenseLogsFragment newInstance(ExpenseManager expenseManager) {
         ExpenseLogsFragment expenseLogsFragment = new ExpenseLogsFragment();
         Bundle args = new Bundle();
@@ -48,11 +52,9 @@ public class ExpenseLogsFragment extends Fragment {
         return expenseLogsFragment;
     }
 
-    public ExpenseLogsFragment() {
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.fragment_expense_logs, container, false);
         TableLayout logsTableLayout = (TableLayout) rootView.findViewById(R.id.logs_table);
         TableRow tableRowHeader = (TableRow) rootView.findViewById(R.id.logs_table_header);
@@ -62,8 +64,10 @@ public class ExpenseLogsFragment extends Fragment {
         if (currentExpenseManager != null) {
             transactionList = currentExpenseManager.getTransactionLogs();
         }
+
         generateTransactionsTable(rootView, logsTableLayout, transactionList);
         return rootView;
+
     }
 
     private void generateTransactionsTable(View rootView, TableLayout logsTableLayout,

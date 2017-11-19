@@ -81,7 +81,7 @@ public class ManageExpensesFragment extends Fragment implements View.OnClickList
             adapter = new ArrayAdapter<>(this.getActivity(), R.layout.support_simple_spinner_dropdown_item,
                     currentExpenseManager.getAccountNumbersList());
 
-            rootView.invalidate();
+            //rootView.invalidate();
 
 
         }
@@ -117,16 +117,10 @@ public class ManageExpensesFragment extends Fragment implements View.OnClickList
                         currentExpenseManager.updateAccountBalance(selectedAccount, day, month, year,
                                 ExpenseType.valueOf(type.toUpperCase()), amountStr);
 
-                        //////
-                        String traDate = day + "-" + month + "-" + year;
-
-                        boolean b = db.AddTransactionDetail(traDate, selectedAccount, type, Double.parseDouble(amountStr));
-                        if (b) {
-                            Toast.makeText(getActivity(), "Added", Toast.LENGTH_LONG).show();
-                        }
+                        
+                        Toast.makeText(getActivity(), "Transaction Added", Toast.LENGTH_LONG).show();
 
 
-                        ////////////////////////////////////////
                     } catch (InvalidAccountException e) {
                         new AlertDialog.Builder(this.getActivity())
                                 .setTitle(this.getString(R.string.msg_account_update_unable) + selectedAccount)
