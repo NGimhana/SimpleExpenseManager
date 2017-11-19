@@ -117,7 +117,7 @@ public class ManageExpensesFragment extends Fragment implements View.OnClickList
                         currentExpenseManager.updateAccountBalance(selectedAccount, day, month, year,
                                 ExpenseType.valueOf(type.toUpperCase()), amountStr);
 
-                        
+
                         Toast.makeText(getActivity(), "Transaction Added", Toast.LENGTH_LONG).show();
 
 
