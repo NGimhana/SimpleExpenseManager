@@ -55,15 +55,36 @@ public class ExpenseLogsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_expense_logs, container, false);
-        TableLayout logsTableLayout = (TableLayout) rootView.findViewById(R.id.logs_table);
+        final View rootView = inflater.inflate(R.layout.fragment_expense_logs, container, false);
+        final TableLayout logsTableLayout = (TableLayout) rootView.findViewById(R.id.logs_table);
         TableRow tableRowHeader = (TableRow) rootView.findViewById(R.id.logs_table_header);
+
+        //Refresh View Button
+        /*Button refreshButton= (Button) rootView.findViewById(R.id.refresh);
+
+
+        //Implementation Has some Errors in refreshing
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                List<Transaction> transactionList = new ArrayList<>();
+
+                if (currentExpenseManager != null) {
+                    transactionList = currentExpenseManager.getTransactionLogs();
+                }
+                generateTransactionsTable(rootView, logsTableLayout, transactionList);
+            }
+        });
+        */
+
 
         currentExpenseManager = (ExpenseManager) getArguments().get(EXPENSE_MANAGER);
         List<Transaction> transactionList = new ArrayList<>();
         if (currentExpenseManager != null) {
             transactionList = currentExpenseManager.getTransactionLogs();
         }
+
 
         generateTransactionsTable(rootView, logsTableLayout, transactionList);
         return rootView;

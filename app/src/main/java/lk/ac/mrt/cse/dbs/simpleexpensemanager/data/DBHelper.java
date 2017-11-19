@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Account;
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.ExpenseType;
+
 /**
  * Created by gimhana on 11/15/17.
  */
@@ -81,6 +84,51 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor result = database.rawQuery("SELECT * FROM " + table_Name, null);
         return result;
 
+    }
+
+    public boolean removeAccount(String accountNo) {
+        SQLiteDatabase database = this.getWritableDatabase();
+//        String sql="DELETE FROM "+TABLE_ACCOUNT +" WHERE "+ACCOUNT_NO+" = "+accountNo;
+//        Cursor cursor = database.rawQuery(sql, null);
+        return database.delete(TABLE_ACCOUNT, ACCOUNT_NO + " = " + accountNo, null) > 0;
+
+    }
+
+    public Account searchAccount(String accountNo) {
+
+        SQLiteDatabase database = this.getReadableDatabase();
+        Cursor cursorAcc = database.rawQuery("SELECT * FROM " + TABLE_ACCOUNT + " WHERE " + ACCOUNT_NO + " = " + "\'" + accountNo + "\'", null);
+        cursorAcc.moveToFirst();
+
+        Account searchedAccount = null;
+        //while (cursorAcc.moveToNext()) {
+
+        cursorAcc.getString(0);
+        String accNo = cursorAcc.getString(0);
+        String bankName = cursorAcc.getString(1);
+        String accountHolderName = cursorAcc.getString(2);
+        double balance = cursorAcc.getDouble(3);
+        searchedAccount = new Account(accNo, bankName, accountHolderName, balance);
+        //}
+        return searchedAccount;
+    }
+
+    public boolean updateAccount(String accountNo, ExpenseType expenseType, double amount) {
+
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        Account account = this.searchAccount(accountNo);
+        switch (expenseType) {
+            case EXPENSE:
+                cv.put(BALANCE, account.getBalance() - amount);
+                break;
+            case INCOME:
+                cv.put(BALANCE, account.getBalance() + amount);
+                break;
+        }
+
+        return database.update(TABLE_ACCOUNT, cv, ACCOUNT_NO + " = " + "\'" + accountNo + "\'", null) > 0;
     }
 
     @Override

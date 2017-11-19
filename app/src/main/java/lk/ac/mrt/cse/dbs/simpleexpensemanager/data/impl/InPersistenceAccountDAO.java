@@ -2,7 +2,6 @@ package lk.ac.mrt.cse.dbs.simpleexpensemanager.data.impl;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -67,18 +66,7 @@ public class InPersistenceAccountDAO implements AccountDAO {
     @Override
     public Account getAccount(String accountNo) throws InvalidAccountException {
 
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-        Cursor cursorAcc = database.rawQuery("SELECT * FROM account WHERE accountNo = " + accountNo, null);
-        cursorAcc.moveToFirst();
-        Account searchedAccount = null;
-        while (cursorAcc.moveToNext()) {
-            cursorAcc.getString(0);
-            String accNo = cursorAcc.getString(0);
-            String bankName = cursorAcc.getString(1);
-            String accountHolderName = cursorAcc.getString(2);
-            double balance = cursorAcc.getDouble(3);
-            searchedAccount = new Account(accNo, bankName, accountHolderName, balance);
-        }
+        Account searchedAccount = dbHelper.searchAccount(accountNo);
         if (searchedAccount != null) {
             return searchedAccount;
         } else {
@@ -95,11 +83,22 @@ public class InPersistenceAccountDAO implements AccountDAO {
 
     @Override
     public void removeAccount(String accountNo) throws InvalidAccountException {
+        boolean result = dbHelper.removeAccount(accountNo);
+        if (result) {
+            Log.i("TAG", "Account Removed!!");
+        } else {
+            Log.i("TAG", "Deletion Failed!!");
+        }
 
     }
 
     @Override
     public void updateBalance(String accountNo, ExpenseType expenseType, double amount) throws InvalidAccountException {
-
+        boolean result = dbHelper.updateAccount(accountNo, expenseType, amount);
+        if (result) {
+            Log.i("TAG", "Account Updated!!");
+        } else {
+            Log.i("TAG", "Updation Failed!!");
+        }
     }
 }
